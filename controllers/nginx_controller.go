@@ -50,7 +50,7 @@ func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
-	if err := e.Get(ctx, req.NamespacedName, &nginx); err != nil{
+	if err := r.Get(ctx, req.NamespacedName, &nginx); err != nil{
 		log.Error(err, "unable to fetch Nginx")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
