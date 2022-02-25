@@ -35,10 +35,12 @@ spec:
           spec:
             description: NginxSpec defines the desired state of Nginx
             properties:
-              foo:
+              replica num:
                 description: Foo is an example field of Nginx. Edit nginx_types.go
                   to remove/update
-                type: string
+                type: integer
+            required:
+            - replica num
             type: object
           status:
             description: NginxStatus defines the observed state of Nginx
