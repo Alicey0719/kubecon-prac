@@ -49,14 +49,15 @@ type NginxReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
-var nginx webserverv1.Nginx
-log.Info("fetching Nginx Resource")
+
 func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	log := r.Log.WithValues("nginx", req.NamespacedName)
 
 	// TODO(user): your logic here
+	var nginx webserverv1.Nginx
+	log.Info("fetching Nginx Resource")
 	if err := r.Get(ctx, req.NamespacedName, &nginx); err != nil{
 		log.Error(err, "unable to fetch Nginx")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
