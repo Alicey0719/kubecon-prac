@@ -46,8 +46,12 @@ type NginxReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
+var nginx webserverv1.Nginx
+log.Info("fetching Nginx Resource")
 func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
+
+	log := r.Log.WithValues("foo", req.NamespacedName)
 
 	// TODO(user): your logic here
 	if err := r.Get(ctx, req.NamespacedName, &nginx); err != nil{
@@ -166,7 +170,7 @@ func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 }
 
 
-func (r *NginxReconciler) cleanupOwnedResources(ctx context.Context, log logr.Logger, nginx *samplecontrollerv1alpha1.Nginx) error {
+func (r *NginxReconciler) cleanupOwnedResources(ctx context.Context, log logr.Logger, nginx *webserverv1.Nginx) error {
 	log.Info("finding existing Deployments for Nginx resource")
 
 	// List all deployment resources owned by this Nginx
@@ -196,7 +200,10 @@ func (r *NginxReconciler) cleanupOwnedResources(ctx context.Context, log logr.Lo
 	return nil
 }
 
-
+var (
+	deploymentOwnerKey = ".metadata.controller"
+	apiGVStr           = webserverv1.GroupVersion.String()
+)
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *NginxReconciler) SetupWithManager(mgr ctrl.Manager) error {
