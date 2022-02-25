@@ -54,7 +54,7 @@ log.Info("fetching Nginx Resource")
 func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	log := r.Log.WithValues("foo", req.NamespacedName)
+	log := r.Log.WithValues("nginx", req.NamespacedName)
 
 	// TODO(user): your logic here
 	if err := r.Get(ctx, req.NamespacedName, &nginx); err != nil{
