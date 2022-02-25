@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 
+	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -30,7 +31,9 @@ import (
 // NginxReconciler reconciles a Nginx object
 type NginxReconciler struct {
 	client.Client
+	Log      logr.Logger
 	Scheme *runtime.Scheme
+	Recorder record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=webserver.kubecom-prac.k8s.alicey.dev,resources=nginxes,verbs=get;list;watch;create;update;patch;delete
