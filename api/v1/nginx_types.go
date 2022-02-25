@@ -29,13 +29,16 @@ type NginxSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Nginx. Edit nginx_types.go to remove/update
-	replica int `json:"replica num"`
+	DeploymentName string `json:"deploymentName"`
+	Replicas int32 `json:"replica num"`
 }
 
 // NginxStatus defines the observed state of Nginx
 type NginxStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	NodePort int `json:"nginx node pory number"`
+	AvailableReplicas int32 `json:"availableReplicas"`
 }
 
 //+kubebuilder:object:root=true
