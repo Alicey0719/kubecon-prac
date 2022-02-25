@@ -1,0 +1,6 @@
+domain: kubecom-prac.k8s.alicey.dev
+layout:
+- go.kubebuilder.io/v3
+projectName: kubecon-prac
+repo: kubecom-prac.k8s.alicey.dev
+version: "3"
