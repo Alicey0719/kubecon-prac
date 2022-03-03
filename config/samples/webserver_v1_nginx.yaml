@@ -1,6 +1,0 @@
-apiVersion: webserver.kubecom-prac.k8s.alicey.dev/v1
-kind: Nginx
-metadata:
-  name: nginx-sample
-spec:
-  # TODO(user): Add fields here
