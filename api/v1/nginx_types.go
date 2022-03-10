@@ -29,13 +29,28 @@ type NginxSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Nginx. Edit nginx_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Format:=string
+
+	DeploymentName string `json:"deploymentName"`
+
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Format:=Minimum=0
+
+	Replicas *int32 `json:"replicas"`
+
 }
 
 // NginxStatus defines the observed state of Nginx
 type NginxStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// 利用可能レプリカ数
+	// +optional
+
+	AvailableReplicas int32 `json:"availableReplicas"`
 }
 
 //+kubebuilder:object:root=true
