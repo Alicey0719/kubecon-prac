@@ -19,7 +19,7 @@ package controllers
 import (
 	"context"
 
-	"github.com/go-loger/loger"
+	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	appsv1 "k8s.io/api/apps/v1"
