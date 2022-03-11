@@ -1,6 +1,7 @@
 apiVersion: k8s.alicey.dev/v1
 kind: Nginx
 metadata:
-  name: nginx-sample
+  name: nginx-test
 spec:
-  # TODO(user): Add fields here
+  deploymentName: "nginx-test"
+  replicas: 4

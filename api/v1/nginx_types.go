@@ -36,7 +36,7 @@ type NginxSpec struct {
 	DeploymentName string `json:"deploymentName"`
 
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Format:=Minimum=0
+	// +kubebuilder:validation:Minimum=0
 
 	Replicas *int32 `json:"replicas"`
 }

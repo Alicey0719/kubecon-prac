@@ -39,7 +39,8 @@ spec:
                 format: string
                 type: string
               replicas:
-                format: Minimum=0
+                format: int32
+                minimum: 0
                 type: integer
             required:
             - deploymentName
