@@ -29,7 +29,7 @@ type NginxSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Nginx. Edit nginx_types.go to remove/update
-	
+
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:Format:=string
 
@@ -39,7 +39,6 @@ type NginxSpec struct {
 	// +kubebuilder:validation:Format:=Minimum=0
 
 	Replicas *int32 `json:"replicas"`
-
 }
 
 // NginxStatus defines the observed state of Nginx

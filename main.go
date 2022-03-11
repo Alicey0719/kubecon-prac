@@ -68,7 +68,7 @@ func main() {
 
 	var resyncPeriod = time.Second * 30
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		SyncPeriod:         &resyncPeriod,
+		SyncPeriod:             &resyncPeriod,
 		Scheme:                 scheme,
 		MetricsBindAddress:     metricsAddr,
 		Port:                   9443,

@@ -20,29 +20,28 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/tools/record"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	k8saliceydevv1 "github.com/Alicey0719/kubecon-prac/api/v1"
 )
 
 // NginxReconciler reconciles a Nginx object
 type NginxReconciler struct {
-	client.Client //apiServerにアクセスするやつ
-	Log logr.Logger //ロガー
-	Scheme *runtime.Scheme //runtime.ObjectをGVK,GVRに解決するやつ
-	Recorder record.EventRecorder //Event記録するやつ
+	client.Client                      //apiServerにアクセスするやつ
+	Log           logr.Logger          //ロガー
+	Scheme        *runtime.Scheme      //runtime.ObjectをGVK,GVRに解決するやつ
+	Recorder      record.EventRecorder //Event記録するやつ
 }
 
-//+kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=k8s.alicey.dev,resources=nginxes/finalizers,verbs=update
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;delete
 // +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 
@@ -55,10 +54,11 @@ type NginxReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
-func (r *NginxReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	// TODO(user): your logic here
-	ctx := context.Background() //空のcontext作成
+func (r *NginxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("nginx", req.NamespacedName)
+	// TODO(user): your logic here
+	//ctx := context.Background() //空のcontext作成
+	//log := r.Log.WithValues("nginx", req.NamespacedName)
 
 	// NginxObjの取得
 	var nginx k8saliceydevv1.Nginx
@@ -76,7 +76,7 @@ func (r *NginxReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	// Nginxが管理するDeploymentの更新・作成
 	deploymentName := nginx.Spec.DeploymentName //DeploymentNameの取得
-	deploy := &appsv1.Deployment{ //DeploymentTempの作成
+	deploy := &appsv1.Deployment{               //DeploymentTempの作成
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      deploymentName,
 			Namespace: req.Namespace,
@@ -120,7 +120,7 @@ func (r *NginxReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			return err
 		}
 
-		return nil		
+		return nil
 	}); err != nil {
 		// エラーハンドリング
 		log.Error(err, "unable to ensure deployment is correct")
@@ -130,7 +130,7 @@ func (r *NginxReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	// −ステータスの更新(AvailableReplicas)
 	var deployment appsv1.Deployment
 	var deploymentNamespacedName = client.ObjectKey{Namespace: req.Namespace, Name: nginx.Spec.DeploymentName} //取得するDeploymentObjのNamespaceとNameの絞り込み
-	if err := r.Get(ctx, deploymentNamespacedName, &deployment); err != nil { // 対象のDevObjをin-memory-cacheから取得
+	if err := r.Get(ctx, deploymentNamespacedName, &deployment); err != nil {                                  // 対象のDevObjをin-memory-cacheから取得
 		log.Error(err, "unable to fetch Deployment")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -186,7 +186,6 @@ func (r *NginxReconciler) cleanupOwnedResources(ctx context.Context, log logr.Lo
 	return nil
 }
 
-
 // setupWithMng
 var (
 	deploymentOwnerKey = ".metadata.controller"
@@ -195,7 +194,7 @@ var (
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *NginxReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(&appsv1.Deployment{}, deploymentOwnerKey, func(rawObj runtime.Object) []string { //DeploymentOwnerKey(IndexField)の追加
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &appsv1.Deployment{}, deploymentOwnerKey, func(rawObj client.Object) []string { //DeploymentOwnerKey(IndexField)の追加
 		deployment := rawObj.(*appsv1.Deployment)
 		owner := metav1.GetControllerOf(deployment) //DeploymentのOwnerReferenceの取得
 		if owner == nil {
@@ -210,7 +209,7 @@ func (r *NginxReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return []string{owner.Name}
 	}); err != nil {
 		return err
-		}
+	}
 
 	// Watch対象Resourcesの選択
 	return ctrl.NewControllerManagedBy(mgr).
